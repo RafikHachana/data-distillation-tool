@@ -1,0 +1,36 @@
+{
+    "os": "Linux-5.15.0-113-generic-x86_64-with-glibc2.31",
+    "python": "3.9.7",
+    "heartbeatAt": "2024-07-04T14:25:54.976949",
+    "startedAt": "2024-07-04T14:25:53.464450",
+    "docker": null,
+    "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "gpu_count": 1,
+    "cpu_count": 16,
+    "cuda": null,
+    "args": [
+        "--dataset=CIFAR10",
+        "--ipc=10",
+        "--syn_steps=20",
+        "--expert_epochs=3",
+        "--max_start_epoch=20",
+        "--zca",
+        "--lr_img=1000",
+        "--lr_lr=1e-05",
+        "--lr_teacher=0.01",
+        "--buffer_path=cifar-10-buffer",
+        "--data_path=cifar-10-python"
+    ],
+    "state": "running",
+    "program": "/home/rafik/Documents/InnoUni/sum24/Data-Distillation/distill.py",
+    "codePath": "distill.py",
+    "git": {
+        "remote": "git@github.com:Kamil-Sabbagh/Data-Distillation.git",
+        "commit": "973852f1392d32f449078618f193f7f75c51b818"
+    },
+    "email": "rafikhachana@gmail.com",
+    "root": "/home/rafik/Documents/InnoUni/sum24/Data-Distillation",
+    "host": "rafik-Legion-7",
+    "username": "rafik",
+    "executable": "/home/rafik/anaconda3/envs/distillation/bin/python3"
+}

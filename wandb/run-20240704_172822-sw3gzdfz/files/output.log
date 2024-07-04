@@ -1,0 +1,37 @@
+  0%|                                                                                                                                     | 0/50000 [00:00<?, ?it/s]/home/rafik/Documents/InnoUni/sum24/Data-Distillation/distill.py:93: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  labels_all.append(class_map[torch.tensor(sample[1]).item()])
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 50000/50000 [00:00<00:00, 116741.60it/s]
+50000it [00:00, 578553.42it/s]
+/home/rafik/Documents/InnoUni/sum24/Data-Distillation/distill.py:113: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at  /opt/conda/conda-bld/pytorch_1646756402876/work/torch/csrc/utils/tensor_new.cpp:210.)
+  label_syn = torch.tensor([np.ones(args.ipc,dtype=np.int_)*i for i in range(num_classes)], dtype=torch.long, requires_grad=False, device=args.device).view(-1) # [0,0,0, 1,1,1, ..., 9,9,9]
+Traceback (most recent call last):
+  File "/home/rafik/Documents/InnoUni/sum24/Data-Distillation/distill.py", line 499, in <module>
+    main(args, num_of_images)
+  File "/home/rafik/Documents/InnoUni/sum24/Data-Distillation/distill.py", line 178, in main
+    buffer = torch.load(expert_files[file_idx])
+  File "/home/rafik/anaconda3/envs/distillation/lib/python3.9/site-packages/torch/serialization.py", line 705, in load
+    with _open_zipfile_reader(opened_file) as opened_zipfile:
+  File "/home/rafik/anaconda3/envs/distillation/lib/python3.9/site-packages/torch/serialization.py", line 243, in __init__
+    super(_open_zipfile_reader, self).__init__(torch._C.PyTorchFileReader(name_or_buffer))
+RuntimeError: PytorchStreamReader failed reading zip archive: failed finding central directory
+Hyper-parameters:
+ {'dataset': 'CIFAR10', 'subset': 'imagenette', 'model': 'ConvNet', 'ipc': 1, 'eval_mode': 'S', 'num_eval': 5, 'eval_it': 100, 'epoch_eval_train': 1000, 'Iteration': 5000, 'lr_img': 1000.0, 'lr_lr': 1e-05, 'lr_teacher': 0.01, 'lr_init': 0.01, 'batch_real': 64, 'batch_syn': 10, 'batch_train': 64, 'pix_init': 'real', 'dsa': True, 'dsa_strategy': 'color_crop_cutout_flip_scale_rotate', 'data_path': 'cifar-10-python', 'buffer_path': 'cifar-10-buffer/Fair', 'expert_epochs': 3, 'syn_steps': 20, 'max_start_epoch': 20, 'zca': True, 'load_all': False, 'no_aug': False, 'texture': False, 'canvas_size': 2, 'canvas_samples': 1, 'max_files': None, 'max_experts': None, 'force_save': False, 'save_path': '', 'device': 'cuda', 'zca_trans': ZCAWhitening(), 'im_size': [32, 32], 'dc_aug_param': None, 'dsa_param': <utils.ParamDiffAug object at 0x7f5bfc2f2cd0>, '_wandb': {}, 'distributed': False}
+Evaluation model pool:  ['ConvNet']
+BUILDING DATASET
+class c = 0: 5000 real images
+class c = 1: 5000 real images
+class c = 2: 5000 real images
+class c = 3: 5000 real images
+class c = 4: 5000 real images
+class c = 5: 5000 real images
+class c = 6: 5000 real images
+class c = 7: 5000 real images
+class c = 8: 5000 real images
+class c = 9: 5000 real images
+real images channel 0, mean = 0.0000, std = 0.2681
+real images channel 1, mean = 0.0000, std = 0.2532
+real images channel 2, mean = -0.0000, std = 0.2617
+initialize synthetic data from random real images
+[2024-07-04 17:28:26] training begins
+Expert Dir: cifar-10-buffer/Fair/CIFAR10/ConvNet
+loading file cifar-10-buffer/Fair/CIFAR10/ConvNet/replay_buffer_31.pt
