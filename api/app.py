@@ -1,74 +1,57 @@
-import os
-from flask import Flask, request, jsonify
-from celery import Celery
-import subprocess
+from flask import Flask, send_from_directory
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from flask_cors import CORS
+from flasgger import Swagger
+from config import Config
 
-app = Flask(__name__)
+db = SQLAlchemy()
+migrate = Migrate()
 
-# Configure Celery
-app.config['CELERY_BROKER_URL'] = os.getenv('CELERY_BROKER_URL', 'amqp://rabbitmq')
-app.config['CELERY_RESULT_BACKEND'] = os.getenv('CELERY_RESULT_BACKEND', 'rpc://')
-
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
-celery.conf.update(app.config)
-
-@celery.task
-def launch_distillation_task(dataset, dataset_type):
-    """
-    Celery task to launch the distillation process based on dataset type.
-    """
-    if dataset_type == "image":
-        command = f"python3 examples/distillation_cnn.py --dataset {dataset} --net-t resnet110 --net-s resnet20 --path-t ./save/models"
-    elif dataset_type == "text":
-        command = f"python3 examples/text_distill.py --mode train --dataset {dataset} --save_model --early_stopping --epoch 100 --learning_rate 1.0 --no-cuda"
-    else:
-        raise ValueError("Invalid dataset_type. Must be 'image' or 'text'.")
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
     
-    subprocess.run(command, shell=True, check=True)
-    return {"status": "Distillation process completed successfully"}
-
-@app.route('/distill', methods=['POST'])
-def distill():
-    """
-    API endpoint to start the distillation process.
-    """
-    data = request.json
-    dataset = data.get('dataset')
-    dataset_type = data.get('dataset_type')
+    db.init_app(app)
+    migrate.init_app(app, db)
+    CORS(app)
     
-    if not dataset:
-        return jsonify({"error": "Missing 'dataset' parameter"}), 400
-    if dataset_type not in ['image', 'text']:
-        return jsonify({"error": "Invalid 'dataset_type' parameter"}), 400
 
-    task = launch_distillation_task.apply_async(args=[dataset, dataset_type])
-    return jsonify({"task_id": task.id}), 202
+    from routes import bp
+    app.register_blueprint(bp)
 
-@app.route('/status/<task_id>', methods=['GET'])
-def task_status(task_id):
-    """
-    API endpoint to check the status of a Celery task.
-    """
-    task = launch_distillation_task.AsyncResult(task_id)
-    if task.state == 'PENDING':
-        response = {
-            'state': task.state,
-            'status': 'Pending...'
+    swagger_template = {
+        "info": {
+            "title": "Data Distillation SaaS API",
+            "description": "We offer Dataset Distillation for Text and Images, as well as task tracking, history, and auto-evaluation",
+            # "contact": {
+            #     "email": "rafikhachana@gmail.com"
+            # },
+            "license": {
+                "name": "MIT License",
+                "url": "https://opensource.org/licenses/MIT"
+            },
+            "version": "1.0.0"
+        },
+        "host": "localhost:5000",  # The host (name or ip) serving the API
+        "basePath": "/",  # The base path for the API
+        "schemes": [
+            "http",
+            "https"
+        ],
+        "securityDefinitions": {
+            "Bearer": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header",
+                "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
+            }
         }
-    elif task.state != 'FAILURE':
-        response = {
-            'state': task.state,
-            'status': task.info.get('status', ''),
-        }
-        if 'result' in task.info:
-            response['result'] = task.info['result']
-    else:
-        # Something went wrong in the background job
-        response = {
-            'state': task.state,
-            'status': str(task.info),  # This is the exception raised
-        }
-    return jsonify(response)
+    }
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    swagger = Swagger(app, template=swagger_template)
+
+    @app.route('/redoc')
+    def redoc():
+        return send_from_directory('static', 'redoc.html')
+    return app
