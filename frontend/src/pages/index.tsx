@@ -25,19 +25,19 @@ export default function Home() {
                     To distill data from text/images, please go to Distill!
                 </Text>
                 <Flex mt={5} justifyContent="center" alignItems="center" flexDir={'column'}>
-                    <Text>
+                    {/* <Text>
                         The flow of distillation is described in the following images.
-                    </Text>
-                    <Box mt={10} width={600} height={500} background={"white"}>
+                    </Text> */}
+                    {/* <Box mt={10} width={600} height={500} background={"white"}>
                         <Image src="/DD_plot.jpg" alt="dd-plot" />
-                    </Box>
+                    </Box> */}
 
-                    <Text mt={10}>
+                    <Text mt={4}>
                     The architecture of the distillation process is described in the following image.
                     </Text>
                     
                     <Box mt={10} width={600} height={500} background={"white"}>
-                        <Image src="/diagram.png" alt="architecture" />
+                        <Image src="/diagram.jpg" alt="architecture" />
                     </Box>
                 </Flex>
             </Box>
