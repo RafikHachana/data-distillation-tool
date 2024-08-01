@@ -1,9 +1,13 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from flask import Flask, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flasgger import Swagger
 from config import Config
+# from celery_app import celery_app
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -14,7 +18,8 @@ def create_app():
     
     db.init_app(app)
     migrate.init_app(app, db)
-    CORS(app)
+    # celery_app.init_app(app)
+    CORS(app, origins=["*"])
     
 
     from routes import bp
@@ -55,3 +60,5 @@ def create_app():
     def redoc():
         return send_from_directory('static', 'redoc.html')
     return app
+
+# app = create_app()
